@@ -5,35 +5,36 @@ import _ from 'lodash';
 import { SearchBar, Header, EmptyResult, MovieList } from '../../components';
 import { getAllMoviesSearch } from '../../services';
 import styles from './styles';
-import dummy from "../../common/dummy"
+import { COLORS } from '../../common';
+
+import { dummy_data } from "../../common/dummy"
 
 
 export default function Search() {
     const [movieName, setMovieName] = useState('');//value of input search
-    const [Movies, setMovies] = useState([]);//store received data form request search in array
+    const [data, setData] = useState([]);//store received data form request search in array
     const [loading, setLoading] = useState(false); //Loading data  
 
 
 
+
+
     useEffect(() => {
-
-
-    }, []);   //OnInit
-
-    useEffect(() => { setMovies([]) }, [movieName]);   //OnChanges 
+        setData([])
+    }, [movieName]);   //OnChanges 
 
     /**
      * Start Main Function 
      * 
      */
-    //get Movies with handler multi request
+    //get data with handler multi request
 
-    const _getMovies = useCallback(_.debounce(handlerRequest, 1300), []);
+    const _getdata = useCallback(_.debounce(handlerRequest, 1300), []);
 
     //handler text input search change (movieName)
-    const handlerTextChange = async _movieName => {
-        setMovieName(_movieName);
-        await _getMovies(_movieName);
+    const handlerTextChange = async movieName => {
+        setMovieName(movieName);
+        await _getdata(movieName);
     };
 
     const handlerOnPressSearch = async () => { handlerRequest(movieName) };    //handler on press search icon
@@ -45,13 +46,15 @@ export default function Search() {
     */
 
     //handler Request  Function
-    async function handlerRequest(_movieName) {
+    async function handlerRequest(movieName) {
         // console.log('movieName---------------------------------------', _movieName)
         setLoading(true);//set loading true
-        const response = await getAllMoviesSearch(_movieName); // send request to api to get data
-        setMovies(response)//set response in state movies
-        setLoading(true); //set loading false
-        // console.log('Movies---------------------------------------', Movies)
+        const response = await getAllMoviesSearch(movieName); // send request to api to get data
+        setData(response)//set response in state data
+        setLoading(false); //set loading false
+        console.log('response---------------------------------------', response)
+        console.log('data---------------------------------------', data)
+
 
     }
 
@@ -61,43 +64,42 @@ export default function Search() {
 
             {/* SearchBarComponent */}
             <SearchBar
-                value={'avatar'}
+                value={movieName}
+                onChange={(movieName) => { handlerTextChange(movieName) }}
+                onPress={() => { handlerOnPressSearch(movieName) }}
             />
 
             {/* HeaderComponent */}
-            <Header text={!!Movies ? 'Recent Searches' : 'Search Result'} />
+            <Header text={!data ? 'Recent Searches' : 'Search Result'} />
 
             {/* ContentBody */}
 
-            <ScrollView>
-                {
-                    Movies ? (Movies.map((item) => { <Text>{item.title}</Text> })) : ('')
 
-                }
-            </ScrollView>
+            {
+                !data ?
 
-            {/* {
-                !Movies ?
-                    (
-                        <View>
-                            <EmptyResult
-                                headText="You Don`t Have Search History"
-                                Description={`When you search for movies you will see \n the history of your search`}
-                            />
-                        </View>
-                    ) :
-                    (
-                        <View>
-                            <MovieList
-                                data={Movies}
-                                onPress={() => { }}
-                            />
 
-                        </View>
+                    <EmptyResult
+                        headText="You Don`t Have Search History"
+                        Description={`When you search for data you will see \n the history of your search`}
+                    />
+
+                    :
+
+                    loading ? (
+                        <ActivityIndicator
+                            color={COLORS.sun}
+                            style={styles.activityIndicator}
+                        />
+                    ) : (
+                        <MovieList
+                            data={data && movieName !== '' ? data : []}
+                            onPress={value => _onPressMovie(value)}
+                        />
                     )
 
-            } */}
+            }
 
-        </View>
+        </View >
     );
 }
