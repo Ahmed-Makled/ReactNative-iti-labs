@@ -23,13 +23,16 @@ export default StyleSheet.create({
         height: '100%',
     },
     contentContainer: {
-        marginLeft: 16,
+        marginLeft: 14,
         marginTop: 24,
+
     },
     movieNameText: {
-        fontSize: 20,
+        fontSize: 16,
         fontFamily: FONTS.bold,
         color: COLORS.white,
+
+
     },
     releaseDateText: {
         fontSize: 14,
@@ -37,13 +40,16 @@ export default StyleSheet.create({
         color: COLORS.white,
         marginTop: 14,
     },
-    rightContainer: {},
+    rightContainer: {
+        flexShrink: 1
+
+    },
     image: {
         position: 'absolute',
-        width: 130,
-        height: 190,
+        width: 100,
+        height: 170,
         bottom: 40,
         marginStart: 12,
-        borderRadius: 16,
+        borderRadius: 10,
     },
 });
