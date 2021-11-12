@@ -4,10 +4,9 @@ import { MovieCard } from '../MovieCard';
 import { dummy_data } from "../../common/dummy"
 import styles from './styles';
 
-export const MovieList = ({ data, onPress }) => {
+export const MovieList = ({ data, onPress, containerStyle }) => {
 
 
-    console.log("data---------------------------", data)
     const renderItem = ({ item }) => (
         <MovieCard data={item} onPress={() => onPress(item)} />
     );
@@ -16,7 +15,7 @@ export const MovieList = ({ data, onPress }) => {
         <FlatList
             data={data}
             renderItem={renderItem}
-            contentContainerStyle={[styles.contentContainer]}
+            contentContainerStyle={[styles.contentContainer, containerStyle]}
             showsVerticalScrollIndicator={false}
         />
     );

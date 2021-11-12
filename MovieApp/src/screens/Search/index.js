@@ -1,25 +1,28 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, ActivityIndicator, FlatList, ScrollView, Text } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, ActivityIndicator, } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigationContainerRef, useNavigation } from '@react-navigation/native';
 import _ from 'lodash';
 import { SearchBar, Header, EmptyResult, MovieList } from '../../components';
 import { getAllMoviesSearch } from '../../services';
-import styles from './styles';
+import { searchMovieAction } from '../../store/actions/searchMovie'
 import { COLORS } from '../../common';
-
-import { dummy_data } from "../../common/dummy"
+import styles from './styles';
 
 
 export default function Search() {
     const [movieName, setMovieName] = useState('');//value of input search
     const [data, setData] = useState([]);//store received data form request search in array
     const [loading, setLoading] = useState(false); //Loading data  
-
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+    const _searchMovies = useSelector(state => state.searchMovie.searchMovieList);
 
 
 
 
     useEffect(() => {
+
         setData([])
     }, [movieName]);   //OnChanges 
 
@@ -27,19 +30,25 @@ export default function Search() {
      * Start Main Function 
      * 
      */
-    //get data with handler multi request
 
-    const _getdata = useCallback(_.debounce(handlerRequest, 1300), []);
+    //get data with handler multi request
+    const _metadata = useCallback(_.debounce(handlerRequest, 1300), []);
 
     //handler text input search change (movieName)
     const handlerTextChange = async movieName => {
         setMovieName(movieName);
-        await _getdata(movieName);
+        await _metadata(movieName);
     };
 
-    const handlerOnPressSearch = async () => { handlerRequest(movieName) };    //handler on press search icon
+    //handler on press search icon
+    const handlerOnPressSearch = async () => { handlerRequest(movieName) };
 
 
+    //handler on press card item
+    const handlerOnPressMovieCard = movie => {
+        dispatch(searchMovieAction(movie));
+        navigation.navigate('Movie', { id: movie.imdbID });
+    };
     /** 
     *Start Helper Function 
     *
@@ -52,8 +61,6 @@ export default function Search() {
         const response = await getAllMoviesSearch(movieName); // send request to api to get data
         setData(response)//set response in state data
         setLoading(false); //set loading false
-        console.log('response---------------------------------------', response)
-        console.log('data---------------------------------------', data)
 
 
     }
@@ -93,8 +100,8 @@ export default function Search() {
                         />
                     ) : (
                         <MovieList
-                            data={data && movieName !== '' ? data : []}
-                            onPress={value => _onPressMovie(value)}
+                            data={data && movieName !== '' ? data : _searchMovies}
+                            onPress={value => handlerOnPressMovieCard(value)}
                         />
                     )
 
