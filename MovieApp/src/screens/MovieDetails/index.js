@@ -1,36 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { getMovieById } from '../../services/getMovieDetails';
-import { MovieCard } from '../../components/';
+import { View, Text, ScrollView } from 'react-native';
+import FastImage from 'react-native-fast-image';
+import { IMAGES } from '../../common';
+import styles from './styles';
+import { MovieDetails as MovieDetail, MovieSummary ,MovieRating} from '../../components/';
+
 
 export default function MovieDetails() {
-    const [movie, setMovie] = useState({});
+    const [data, setData] = useState([]);
     const route = useRoute();
-
     useEffect(() => {
         handlerRequest()
-
-    }, [movie]);
-
+    }, [data]);
 
     //handler Request  Function
-    const handlerRequest = async id => {
+    const handlerRequest = async () => {
         const response = await getMovieById(route.params.id); // send request to api to get data
-
-        setMovie(response)
-        console.log('response-----------------', response)
-
-
-
-
+        setData(response)
     }
 
 
     return (
+
         <View>
-            {/* <MovieCard movie={movie} onPress={() => { }} /> */}
+        <ScrollView >
+            <MovieDetail data={data} />
+             <MovieRating data={data} />
+            <MovieSummary  headTitle={"Summary"}text={data.Plot} />
+            <MovieSummary  headTitle={"Director"}text={data.Director} />
+            <MovieSummary  headTitle={"Actors"}text={data.Actors} />
+
+        </ScrollView>
         </View>
+       
+        
+
+
+
     );
 };
 

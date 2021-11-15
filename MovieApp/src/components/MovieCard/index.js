@@ -4,8 +4,8 @@ import FastImage from 'react-native-fast-image';
 import { IMAGES } from '../../common';
 import styles from './styles';
 
+
 const MovieCard = ({ data, onPress }) => {
-    console.log("data movie card----------------", data)
     return (
         <Pressable style={styles.container} onPress={onPress}>
             <View style={styles.leftContainer} />
