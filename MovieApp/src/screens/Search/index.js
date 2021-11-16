@@ -19,7 +19,7 @@ export default function Search() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const _searchMovies = useSelector(state => state.searchMovie.searchMovieList);
-
+  console.log(data);
   useEffect(() => {
     setData([]);
   }, [movieName]); //OnChanges
@@ -76,7 +76,9 @@ export default function Search() {
       />
 
       {/* HeaderComponent */}
-      <Header text={!data ? 'Recent Searches' : 'Search Result'} />
+      <Header
+        text={!data && movieName !== '' ? 'Recent Searches' : 'Search Result'}
+      />
 
       {/* ContentBody */}
 

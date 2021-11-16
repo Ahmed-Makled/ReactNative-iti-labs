@@ -7,7 +7,7 @@ export const getAllMoviesSearch = async query => {
   try {
     const {data} = await client.get('/', {params});
     if (data.Response === 'True') {
-      console.log('data services------', data);
+      // console.log('data services------', data);
       return data.Search;
     }
   } catch (error) {
